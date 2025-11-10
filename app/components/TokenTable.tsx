@@ -2,6 +2,8 @@
 // app/components/TokenTable.tsx
 'use client';
 
+
+import * as Popover from "@radix-ui/react-popover";
 import { fmtUSD, fmtPct } from "@/app/utils/format";
 import type { Token } from "@/app/api/tokens/route";
 import { useEffect, useRef } from "react";
@@ -50,7 +52,18 @@ const flash = (key: string, current: number) => {
         <div className="font-medium">1h %</div>
         <div className="font-medium">24h %</div>
         <div className="font-medium hidden md:block">24h Volume</div>
-        <div className="font-medium hidden md:block">Liquidity</div>
+        <Popover.Root>
+  <Popover.Trigger className="font-medium underline decoration-dotted">
+    Liquidity
+  </Popover.Trigger>
+  <Popover.Portal>
+    <Popover.Content className="rounded-md bg-slate-900 text-slate-100 p-3 text-sm shadow hidden md:block" sideOffset={8}>
+      Pool depth available to trade without heavy slippage.
+      <Popover.Arrow className="fill-slate-900" />
+    </Popover.Content>
+  </Popover.Portal>
+</Popover.Root>
+
         <div className="font-medium">Chain</div>
       </div>
 
