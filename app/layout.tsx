@@ -19,7 +19,6 @@ export const metadata: Metadata = {
     siteName: "Token Discovery",
     locale: "en_US",
     type: "website",
-    images: [],
   },
   twitter: {
     card: "summary",
@@ -36,7 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-white text-slate-900 dark:bg-black dark:text-slate-100">
+      <body className="bg-slate-950 text-slate-100">
         <Providers>{children}</Providers>
       </body>
     </html>
