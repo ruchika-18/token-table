@@ -1,3 +1,13 @@
+# Token Discovery Table
+
+## Live Demo
+https://token-table-five.vercel.app
+
+## What this is
+Next.js + TypeScript + Tailwind app with tabs, search, sorting, shimmer loader, 30s auto-refresh, and green/red flashes on changes.
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
