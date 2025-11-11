@@ -6,11 +6,18 @@
 import * as Popover from "@radix-ui/react-popover";
 import { fmtUSD, fmtPct } from "@/app/utils/format";
 import type { Token } from "@/app/api/tokens/route";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = { items: Token[]; loading?: boolean; error?: string | null };
 
 export default function TokenTable({ items, loading, error }: Props) {
+ 
+  // modal selection
+const [selected, setSelected] = useState<Token | null>(null);
+// TEMP test: allow opening the modal from browser console
+
+
+
     // remember previous numbers between renders
 const prev = useRef<Record<string, number>>({});
 
@@ -68,33 +75,80 @@ const flash = (key: string, current: number) => {
       </div>
 
       {/* rows */}
-      <div className="divide-y divide-slate-800">
-        {items.map((t) => (
-          <div
-            key={t.id}
-            className="grid grid-cols-5 md:grid-cols-7 px-3 py-2 text-sm odd:bg-slate-900/10 hover:bg-slate-900/40 transition-colors"
-          >
-            <div className="font-medium">
-              {t.name} <span className="text-slate-400">({t.symbol})</span>
-            </div>
-           <div className={`tabular-nums ${flash(t.id + "-price", t.price)}`}>
-  {`$${t.price.toFixed(2)}`}
+<div className="divide-y divide-slate-800">
+  {items.map((t) => (
+    <div
+      key={t.id}
+      onClick={() => {
+  console.log("row click", t.id); // just to check
+  setSelected(t); // opens modal
+}}
+
+      className="cursor-pointer grid grid-cols-5 md:grid-cols-7 px-3 py-2 text-sm odd:bg-slate-900/10 hover:bg-slate-900/40 transition-colors"
+    >
+      {/* name */}
+      <div className="font-medium">
+        {t.name} <span className="text-slate-400">({t.symbol})</span>
+      </div>
+
+      {/* price */}
+      <div className="tabular-nums">${t.price.toFixed(2)}</div>
+
+      {/* 1h % */}
+      <div className={`${t.change1h >= 0 ? "text-emerald-400" : "text-rose-400"} tabular-nums`}>
+        {t.change1h.toFixed(2)}%
+      </div>
+
+      {/* 24h % */}
+      <div className={`${t.change24h >= 0 ? "text-emerald-400" : "text-rose-400"} tabular-nums`}>
+        {t.change24h.toFixed(2)}%
+      </div>
+
+      {/* 24h volume / liquidity (hidden on mobile) */}
+      <div className="hidden md:block tabular-nums">${(t.volume24h / 1000).toFixed(1)}k</div>
+      <div className="hidden md:block tabular-nums">${(t.liquidity / 1000).toFixed(1)}k</div>
+
+      {/* chain */}
+      <div className="text-slate-300">{t.chain}</div>
+    </div>
+  ))}
 </div>
 
-            <div className={`${t.change1h >= 0 ? "text-emerald-400" : "text-rose-400"} tabular-nums ${flash(t.id + "-change1h", t.change1h)}`}>
-  {fmtPct(t.change1h)}
-</div>
+{/* modal (place this AFTER the map, still inside the same parent return) */}
+{selected && (
+  <div
+    className="fixed inset-0 bg-black/50 grid place-items-center z-50"
+    onClick={() => setSelected(null)}
+    aria-modal="true"
+    role="dialog"
+  >
+    <div
+      className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 rounded-xl p-6 w-[min(520px,92vw)] shadow-2xl"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="text-lg font-semibold">
+          {selected.name} <span className="text-slate-500">({selected.symbol})</span>
+        </h3>
+        <button
+          onClick={() => setSelected(null)}
+          className="rounded-md px-2 py-1 text-sm bg-slate-800 text-white hover:bg-slate-700"
+        >
+          Close
+        </button>
+      </div>
 
-            <div className={`${t.change24h >= 0 ? "text-emerald-400" : "text-rose-400"} tabular-nums ${flash(t.id + "-change24h", t.change24h)}`}>
-  {fmtPct(t.change24h)}
-</div>
-
-            <div className="hidden md:block tabular-nums">{fmtUSD(t.volume24h)}</div>
-            <div className="hidden md:block tabular-nums">{fmtUSD(t.liquidity)}</div>
-            <div className="text-slate-300">{t.chain}</div>
-          </div>
-        ))}
+      <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+        <div><span className="text-slate-500">Chain:</span> {selected.chain}</div>
+        <div><span className="text-slate-500">Price:</span> ${selected.price.toFixed(2)}</div>
+        <div><span className="text-slate-500">1h:</span> {selected.change1h.toFixed(2)}%</div>
+        <div><span className="text-slate-500">24h:</span> {selected.change24h.toFixed(2)}%</div>
+        <div className="col-span-2"><span className="text-slate-500">Liquidity:</span> ${selected.liquidity.toLocaleString()}</div>
+        <div className="col-span-2"><span className="text-slate-500">24h Volume:</span> ${selected.volume24h.toLocaleString()}</div>
       </div>
     </div>
+  </div>
+)}
+      </div>
   );
 }
