@@ -78,5 +78,5 @@ http://localhost:3000
 
 ## Demo Video
 Watch the project in action here:  
-👉 [Click to Watch on Loom](https://www.loom.com/share/aaa9004641b744dd80bd0019c8143b3d)
+👉 [Click to Watch on Loom](https://youtu.be/tjlLgSMT9P4)
 
