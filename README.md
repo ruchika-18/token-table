@@ -64,7 +64,7 @@ It includes tabs, live sorting, search, shimmer loaders, and green/red flashes o
 
 ## Run Locally
 
-```bash
+
 # Install dependencies
 npm install
 
