@@ -22,6 +22,15 @@ export default function Home() {
     sortKey: ui.sort.key as any,
     dir: ui.sort.dir,
   });
+  //  Auto-refresh data every 30 seconds
+useEffect(() => {
+  const interval = setInterval(() => {
+    window.location.reload(); // simplest form — refreshes page every 30s
+  }, 30000); // 30,000 ms = 30 seconds
+
+  return () => clearInterval(interval);
+}, []);
+
 
   return (
     <main className="min-h-screen p-6 flex flex-col gap-6 max-w-6xl mx-auto">
